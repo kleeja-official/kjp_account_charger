@@ -1,0 +1,17 @@
+<h3>Charge Your Account</h3>
+<form method="POST" action="{formAction}">
+    <div class="form-group">
+      <label>{olang.KJP_CHRG_AMNT}</label>
+      <input type="number" name="charge_amount" class="form-control">
+    </div>
+    {kjFormKeyPost}
+    <div class="form-group">
+      <label for="exampleInputPassword1">{olang.KJP_CHRG_MTHD}</label>
+      <select name="charge_method" class="custom-select">
+          <LOOP NAME="payMethods">
+                <option value="{{value}}">{{name}}</option>
+          </LOOP>        
+      </select>
+    </div>
+    <button type="submit" name="start_charge" class="btn btn-primary">{olang.KJP_CHRG}</button>
+  </form>
