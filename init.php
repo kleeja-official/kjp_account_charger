@@ -85,10 +85,7 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
         {
             return;
         }
-        elseif (! user_can('recaive_profits'))
-        {
-            return;
-        }
+
 
         if (g('go') == 'charge_account')
         {
