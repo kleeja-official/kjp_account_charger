@@ -47,6 +47,26 @@ it\'s not working without (kleeja_payment) plugin
 
 // Plugin Installation function
 $kleeja_plugin['kjp_account_charger']['install'] = function ($plg_id) {
+    if (! defined('support_kjPay'))
+    {
+        // Don't install this plugin if kleeja_payment is not installed
+        $ERR = 
+        [
+            'ar' => 'هذه عبارة عن ملحق لإضافة `kleeja_payment` ، الرجاء تثبيته ثم تثبيت هذا الملحق' ,
+            'en' => 'this is a package of `kleeja_payment` plugin , Please install it then install this plugin'
+        ];
+
+        global $SQL , $dbprefix , $config;
+
+        $SQL->query("DELETE FROM `{$dbprefix}plugins` WHERE `plg_id` = {$plg_id}");
+
+        kleeja_admin_err(
+            $ERR[$config['language']] ?? $ERR['en']
+        );
+
+        exit;
+    }
+
     add_config_r(
         ['kjp_min_charge_amount' =>
             [
@@ -57,6 +77,31 @@ $kleeja_plugin['kjp_account_charger']['install'] = function ($plg_id) {
             ]
         ]
     );
+
+    KJP::addLang([
+        'KJP_ACT_CHARGE_ACCOUNT'               => 'Charging Account %s',
+        'KJP_CHRG_ACNT'                        => 'Charge Account',
+        'KJP_CHRG_AMNT'                        => 'Charging Amount',
+        'KJP_CHRG_MTHD'                        => 'Charging Method',
+        'KJP_CHRG'                             => 'Charge',
+        'KJP_ACT_ARCH_CHARGE_ACCOUNT'          => 'Charging Accounts',
+        'KJP_MIN_CHARGE_AMOUNT'                => 'the minimal Amount for Charging',
+        'KJP_MIN_CHARGE_IS'                    => 'the minimal Amount for Charging is %s',
+        'KJP_ACC_CHARGEED'                     => 'your account have been charged with %s',
+    ], 'en');
+
+
+    KJP::addLang([
+        'KJP_ACT_CHARGE_ACCOUNT'               => 'تعبئة حساب %s',
+        'KJP_CHRG_ACNT'                        => 'تعبئة حساب',
+        'KJP_CHRG_AMNT'                        => 'شحن بمبلغ',
+        'KJP_CHRG_MTHD'                        => 'طريقة التعبئة',
+        'KJP_CHRG'                             => 'تعبئة',
+        'KJP_ACT_ARCH_CHARGE_ACCOUNT'          => 'تعبئة حساب',
+        'KJP_MIN_CHARGE_AMOUNT'                => 'الحد الأدنى لمبلغ الشحن',
+        'KJP_MIN_CHARGE_IS'                    => 'الحد الأدنى لمبلغ الشحن هو %s',
+        'KJP_ACC_CHARGEED'                     => 'تم تعبئة حسابك ب %s',
+    ]);
 };
 
 
@@ -68,6 +113,8 @@ $kleeja_plugin['kjp_account_charger']['update'] = function ($old_version, $new_v
 // Plugin Uninstallation, function to be called at unistalling
 $kleeja_plugin['kjp_account_charger']['uninstall'] = function ($plg_id) {
     delete_config('kjp_min_charge_amount');
+
+    // remember : Dont delete olang , becuse KJP will need it later
 };
 
 
@@ -80,12 +127,6 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
             return;
         }
         global $THIS_STYLE_PATH_ABS ,$olang ,$lang, $usrcp , $config;
-
-        if (! $usrcp->name())
-        {
-            return;
-        }
-
 
         if (g('go') == 'charge_account')
         {
@@ -115,10 +156,10 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
 
                 exit;
             }
-            $titlee        = 'Account Charger';
+            $titlee        = $olang['KJP_CHRG_ACNT'];
             $no_request    = false;
             $stylee        = 'charge_page';
-            $styleePath    = $styleePath = file_exists($THIS_STYLE_PATH_ABS . 'kj_payment/charge_page.html') ? $THIS_STYLE_PATH_ABS : dirname(__FILE__);
+            $styleePath    = file_exists($THIS_STYLE_PATH_ABS . 'kj_payment/charge_page.html') ? $THIS_STYLE_PATH_ABS : dirname(__FILE__);
             $payMethods    = [];
             $kjFormKeyGet  = kleeja_add_form_key_get('TOPUP' . $usrcp->name() . $usrcp->id());
             $kjFormKeyPost = kleeja_add_form_key('TOPUP' . $usrcp->name() . $usrcp->id());
@@ -148,10 +189,10 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
             return;
         }
 
-        $PAY = $args['PAY'];
-
         if (g('action') == 'charge_account')
         {
+            $PAY = $args['PAY'];
+
             if ($config['kjp_min_charge_amount'] > (int) g('amount'))
             {
                 kleeja_err(sprintf($olang['KJP_MIN_CHARGE_IS'], $config['kjp_min_charge_amount'] . ' ' . $config['iso_currency_code']));
@@ -194,16 +235,6 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
         ];
         return compact('itemInfo');
     },
-    'boot_common' => function ($args) {
-        if (! defined('support_kjPay'))
-        {
-            return;
-        }
-        global $olang , $config;
-        $langFiles = require_once dirname(__FILE__) . '/lang.php';
-        $olang = array_merge($olang, $langFiles);
-        return compact('olang');
-    },
     'KjPay:notFoundedAction_charge_account' => function($args) {
         global $SQL, $dbprefix, $usrcp , $olang , $config;
 
@@ -237,10 +268,15 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
         {
             return;
         }
-
-        global $config , $usrcp;
         $side_menu = $args['side_menu'];
         $side_menu[] = ['name' => 'charge_account', 'title' => $olang['KJP_CHRG_ACNT'], 'url' => 'ucp.php?go=charge_account', 'show' => user_can('recaive_profits')];
+
+        if ($args['user_is'])
+        {
+            // dont forget to do it , to put logout in the end
+            $side_menu[] = $side_menu['logout'];
+            unset($side_menu['logout']);
+        }
         return compact('side_menu');
     },
 
