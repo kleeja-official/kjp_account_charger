@@ -28,7 +28,7 @@ $kleeja_plugin['kjp_account_charger']['information'] = [
         'ar' => ''
     ],
     // Min version of Kleeja that's requiered to run this plugin
-    'plugin_kleeja_version_min' => '3.1.3',
+    'plugin_kleeja_version_min' => '3.1.5',
     // Max version of Kleeja that support this plugin, use 0 for unlimited
     'plugin_kleeja_version_max' => '3.9',
     // Should this plugin run before others?, 0 is normal, and higher number has high priority
