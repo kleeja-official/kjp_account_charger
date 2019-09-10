@@ -16,7 +16,7 @@ $kleeja_plugin['kjp_account_charger']['information'] = [
     // The casual name of this plugin, anything can a human being understands
     'plugin_title' => [
         'en' => 'KJPay Account Charger', // TOP UP :)
-        'ar' => ''
+        'ar' => 'تعبئة حساب'
     ],
     // Who wrote this plugin?
     'plugin_developer' => 'Kleeja Team',
@@ -25,7 +25,7 @@ $kleeja_plugin['kjp_account_charger']['information'] = [
     // Explain what is this plugin, why should I use it?
     'plugin_description' => [
         'en' => 'Charge user accounts when KJPay exists and the group have recaive profits permissions',
-        'ar' => ''
+        'ar' => 'قم بشحن حسابات المستخدمين عند وجود اضافة مدفوعات كليجا'
     ],
     // Min version of Kleeja that's requiered to run this plugin
     'plugin_kleeja_version_min' => '3.1.5',
@@ -37,7 +37,8 @@ $kleeja_plugin['kjp_account_charger']['information'] = [
 
 //after installation message, you can remove it, it's not requiered
 $kleeja_plugin['kjp_account_charger']['first_run']['ar'] = '
-
+باستخدام هذا المكون الإضافي ، يمكنك السماح للمستخدمين بشحن حساباتهم لشراء الملفات برصيدهم <br>
+إنه لا يعمل بدون (kleeja_payment)
 ';
 $kleeja_plugin['kjp_account_charger']['first_run']['en'] = '
 With this plugin you can allow your users to charge their accounts to buy files with their balance <br>
