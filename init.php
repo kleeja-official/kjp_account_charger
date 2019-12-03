@@ -21,7 +21,7 @@ $kleeja_plugin['kjp_account_charger']['information'] = [
     // Who wrote this plugin?
     'plugin_developer' => 'Kleeja Team',
     // This plugin version
-    'plugin_version' => '1.0',
+    'plugin_version' => '1.0.1',
     // Explain what is this plugin, why should I use it?
     'plugin_description' => [
         'en' => 'Charge user accounts when KJPay exists and the group have recaive profits permissions',
