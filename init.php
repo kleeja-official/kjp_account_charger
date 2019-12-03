@@ -142,7 +142,7 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
                 }
                 elseif ($config['kjp_min_charge_amount'] > p('charge_amount'))
                 {
-                    kleeja_err(sprintf($olang['KJP_MIN_CHARGE_IS'], $config['kjp_min_charge_amount'] . ' ' . $config['iso_currency_code']));
+                    kleeja_err(sprintf($olang['KJP_MIN_CHARGE_IS'], $config['kjp_min_charge_amount'] . ' ' . $config['kjp_iso_currency_code']));
 
                     exit;
                 }
@@ -196,7 +196,7 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
 
             if ($config['kjp_min_charge_amount'] > (int) g('amount'))
             {
-                kleeja_err(sprintf($olang['KJP_MIN_CHARGE_IS'], $config['kjp_min_charge_amount'] . ' ' . $config['iso_currency_code']));
+                kleeja_err(sprintf($olang['KJP_MIN_CHARGE_IS'], $config['kjp_min_charge_amount'] . ' ' . $config['kjp_iso_currency_code']));
             }
             $request = true;
 
@@ -256,7 +256,7 @@ $kleeja_plugin['kjp_account_charger']['functions'] = [
         if ($SQL->affected())
         {
             $toGlobal = [];
-            $olang['KJP_JUIN_SUCCESS'] = sprintf($olang['KJP_ACC_CHARGEED'], $_SESSION['KJP_CHARGE'] . ' ' . $config['iso_currency_code']);
+            $olang['KJP_JUIN_SUCCESS'] = sprintf($olang['KJP_ACC_CHARGEED'], $_SESSION['KJP_CHARGE'] . ' ' . $config['kjp_iso_currency_code']);
             unset($_SESSION['KJP_CHARGE']);
             $toGlobal['olang'] = $olang;
             return compact('toGlobal');
